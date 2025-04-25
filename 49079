@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>MAHZEN Giriş</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('https://i.imgur.com/fRM03WP.jpeg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .login-box {
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .login-box input {
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+
+    #error-msg {
+      display: none;
+      color: #ff4d4d;
+      font-weight: bold;
+      animation: shake 0.3s;
+    }
+
+    #main-content {
+      display: none;
+      padding: 20px;
+      max-width: 800px;
+      width: 100%;
+      background: rgba(0,0,0,0.7);
+      border-radius: 15px;
+      box-shadow: 0 0 10px black;
+    }
+
+    #main-content h1 {
+      font-size: 2.2rem;
+      color: #ff69b4;
+      text-shadow: 2px 2px 5px black;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box" id="login-screen">
+  <h3 class="mb-4">MAHZEN GİRİŞ</h3>
+  <input type="password" id="password" class="form-control" placeholder="Şifre">
+  <div id="error-msg">Şifre yanlış!</div>
+  <button class="btn btn-light mt-3" onclick="checkPassword()">Giriş Yap</button>
+</div>
+
+<div id="main-content">
+  <h1 class="text-center mb-4">HOŞGELDİN CANIM 💋</h1>
+
+  <label for="cardList" class="form-label">Kart Listesi (örnek: 5437711025954502|01|2025|160)</label>
+  <textarea class="form-control mb-3" id="cardList" rows="4" placeholder="Her satıra bir kart bilgisi yazın..."></textarea>
+  
+  <div class="d-flex justify-content-center mb-4">
+    <button class="btn btn-success me-2" onclick="startChecker()">Başlat</button>
+    <button class="btn btn-danger" onclick="clearResults()">Temizle</button>
+  </div>
+
+  <div class="card p-3 bg-dark text-white">
+    <h5>Sonuçlar:</h5>
+    <div><strong>Live:</strong> <span id="liveCount">0</span></div>
+    <div><strong>Dead:</strong> <span id="deadCount">0</span></div>
+    <hr>
+    <div id="resultArea" style="max-height: 200px; overflow-y: auto;"></div>
+  </div>
+
+  <audio id="girisMuzik" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+</div>
+
+<script>
+  function checkPassword() {
+    var pass = document.getElementById("password").value;
+    if (pass === "mahzenarow") {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+      document.getElementById("girisMuzik").play();
+    } else {
+      let err = document.getElementById("error-msg");
+      err.style.display = "block";
+      err.style.animation = "shake 0.3s";
+      setTimeout(() => err.style.animation = "", 300);
+    }
+  }
+
+  function startChecker() {
+    const lines = document.getElementById("cardList").value.trim().split("\n");
+    let live = 0, dead = 0;
+    document.getElementById("resultArea").innerHTML = "";
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        if (line.endsWith("2") || line.endsWith("4")) {
+          live++;
+          document.getElementById("resultArea").innerHTML += `<div class="text-success">${line} - LIVE</div>`;
+        } else {
+          dead++;
+          document.getElementById("resultArea").innerHTML += `<div class="text-danger">${line} - DEAD</div>`;
+        }
+        document.getElementById("liveCount").innerText = live;
+        document.getElementById("deadCount").innerText = dead;
+      }, 300 * index);
+    });
+  }
+
+  function clearResults() {
+    document.getElementById("cardList").value = "";
+    document.getElementById("resultArea").innerHTML = "";
+    document.getElementById("liveCount").innerText = "0";
+    document.getElementById("deadCount").innerText = "0";
+  }
+</script>
+
+</body>
+</html>
